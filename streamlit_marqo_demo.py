@@ -6,13 +6,17 @@ import marqo
 from pprint import pprint
 from PIL import Image
 from marqo.errors import IndexAlreadyExistsError, IndexNotFoundError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # constants
 CSV_DATASET = "airwallex.csv"
 CSV_HEADER = ["url", "title", "body", "scraped_from"]
 INDEX_NAME = "airwallex-v4mpnetbase"
 DOCKER_INTERNAL = "http://host.docker.internal:8222/"
-DOCKER_CONTAINER_URL = "http://localhost:8882"
+DOCKER_CONTAINER_URL = os.environ["MARQO_API_ENDPOINT"]
+MARQO_API_KEY = os.environ["MARQO_API_KEY"]
 EN_GB = "English"
 ZH_CN = "Chinese"
 SEARCH_LANG_MODE_OPTIONS = (EN_GB, )  # ZH_CN)
@@ -41,7 +45,7 @@ st.set_page_config(
     menu_items={}
 )
 
-mq = marqo.Client(url=DOCKER_CONTAINER_URL)  # Connection to Marqo Docker Container
+mq = marqo.Client(url=DOCKER_CONTAINER_URL, api_key=MARQO_API_KEY)  # Connection to Marqo Docker Container
 cwd = os.getcwd()  # Get current working directory
 
 
