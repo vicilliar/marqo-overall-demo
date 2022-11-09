@@ -66,7 +66,7 @@ def load_index(number_data):
         mq.create_index(INDEX_NAME, **settings)
 
         with st.spinner("Creating Index..."):
-            mq.index(INDEX_NAME).add_documents(articles_dataset, server_batch_size=100)
+            mq.index(INDEX_NAME).add_documents(articles_dataset, server_batch_size=10)
 
         st.success("Index successfully created.")
     except IndexAlreadyExistsError:
