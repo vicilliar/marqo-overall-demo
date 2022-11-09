@@ -15,11 +15,11 @@ CSV_DATASET = "airwallex.csv"
 CSV_HEADER = ["url", "title", "body", "scraped_from"]
 INDEX_NAME = "airwallex-v4mpnetbase"
 DOCKER_INTERNAL = "http://host.docker.internal:8222/"
-DOCKER_CONTAINER_URL = os.environ["MARQO_API_ENDPOINT"]
+MARQO_API_ENDPOINT = os.environ["MARQO_API_ENDPOINT"]
 MARQO_API_KEY = os.environ["MARQO_API_KEY"]
 EN_GB = "English"
 ZH_CN = "Chinese"
-SEARCH_LANG_MODE_OPTIONS = (EN_GB, )  # ZH_CN)
+SEARCH_LANG_MODE_OPTIONS = (EN_GB,)  # ZH_CN)
 TENSOR_SEARCH_MODE = "TENSOR"
 LEXICAL_SEARCH_MODE = "LEXICAL"
 SEARCH_TEXT_MODE_OPTIONS = ("Tensor", "Lexical")
@@ -45,7 +45,7 @@ st.set_page_config(
     menu_items={}
 )
 
-mq = marqo.Client(url=DOCKER_CONTAINER_URL, api_key=MARQO_API_KEY)  # Connection to Marqo Docker Container
+mq = marqo.Client(url=MARQO_API_ENDPOINT, api_key=MARQO_API_KEY)  # Connection to Marqo Docker Container
 cwd = os.getcwd()  # Get current working directory
 
 
@@ -66,7 +66,7 @@ def load_index(number_data):
         mq.create_index(INDEX_NAME, **settings)
 
         with st.spinner("Creating Index..."):
-            mq.index(INDEX_NAME).add_documents(articles_dataset, server_batch_size=10)
+            mq.index(INDEX_NAME).add_documents(articles_dataset, batch_size=5)
 
         st.success("Index successfully created.")
     except IndexAlreadyExistsError:
@@ -154,7 +154,8 @@ def render_result_rows(search_method: str):
         #   result#, {title, body, url, _id, _highlights: {body or title}, _score}
         if (row[0] >= st.session_state["page"] * 10) and (row[0] < (st.session_state["page"] * 10 + 10)):
             with st.expander(f"{row[0] + 1} - {title}", expanded=True):  # wraps the whole row
-                st.info(f"Score: {score}\n\n**Highlights:** {readable_highlights}\n\n **[Go to page]({url})**", icon="ℹ️")
+                st.info(f"Score: {score}\n\n**Highlights:** {readable_highlights}\n\n **[Go to page]({url})**",
+                        icon="ℹ️")
                 st.write(body)
 
 
