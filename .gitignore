@@ -2,3 +2,5 @@
 
 .venv/
 .env
+large_assets/
+misc/
